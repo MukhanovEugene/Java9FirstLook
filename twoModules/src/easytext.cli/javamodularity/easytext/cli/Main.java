@@ -1,13 +1,15 @@
 package javamodularity.easytext.cli;
 
 import java.io.IOException;
+import java.lang.Iterable;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import javamodularity.easytext.analysis.FleschKincaid;
+import java.util.ServiceLoader;
+import javamodularity.easytext.analysis.api.Analyzer;
 
 public class Main {
   public static void main(String... args) throws IOException {
@@ -20,8 +22,10 @@ public class Main {
     System.out.println("Reading "+path);
     String text = new String(Files.readAllBytes(path), Charset.forName("UTF-8"));
     List<List<String>> sentences = toSentences(text);
-    FleschKincaid fleschAnalysis = new FleschKincaid();
-    System.out.println("Flesh-Kincaid: "+analyze(sentences));
+    Iterable<Analyzer> analyzers = ServiceLoader.load(Analyzer.class);
+    for (Analyzer analyzer: analyzers) {
+        System.out.println(analyzer.getName()+": "+analyzer.analyze(sentences));
+    }
   }
 
   public static List<List<String>> toSentences(String text) {

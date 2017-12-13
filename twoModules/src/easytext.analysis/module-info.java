@@ -1,3 +1,3 @@
 module easytext.analysis {
-  exports javamodularity.easytext.analysis;
+  exports javamodularity.easytext.analysis.api;
 }
